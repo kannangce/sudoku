@@ -4,16 +4,15 @@
             ["@smooth-ui/core-sc"
              :refer
              [Normalize ThemeProvider Button Grid Row Col]]
-            [app.views.elem :refer [cell]]))
+            [app.views.elem :refer [cell grid]]
+            [app.sudoku :refer [generate-data]]))
 
 
 (defn app
       []
       [:<>
        [:> Normalize]
-       [:> Grid {:fluid false}
-        [:> Row
-         [:> Col (cell {:id 1 :value 1 :on-change #(js/alert (str "changed" %))})]]]])
+       (grid (generate-data))])
 
 
 (defn ^:dev/after-load start
