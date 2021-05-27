@@ -7,13 +7,16 @@
             [app.views.elem :refer [cell grid]]
             [app.sudoku :refer [generate-data]]))
 
-
+;; This version is not working
 (defn app
       []
-      [:<>
-       [:> Normalize]
-       (grid (generate-data))])
+      (grid (generate-data)))
 
+(defn app1
+      []
+      (cell {:id        "1-1"
+             :value     nil
+             :on-change #(js/alert "in cell 1 1")}))
 
 (defn ^:dev/after-load start
       []
