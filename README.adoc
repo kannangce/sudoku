@@ -1,0 +1,17 @@
+## About:
+
+Sudoku SPA to learn Re-frame with CLJS
+
+## Pre-requisite:
+
+- npm
+
+## Buid & Run:
+
+Run 
+
+```
+npm install
+yarn dev
+```
+To build and start the app.
