@@ -22,19 +22,19 @@
       [data]
       [:<>
        [:> Grid {:fluid false}
-        ;(for [row (range 9)])
-        [:> Row
-         ;[:> Col]
-         (for [col (range 9)]
-              [cell {:id        (str col "-" 2)
-                     :value     col
-                     :on-change #(js/alert "in cell 1 1")}])]
-        [:> Row
-         ;[:> Col]
-         (for [col (range 9)]
-              [cell {:id        (str col "-" 2)
-                     :value     col
-                     :on-change #(js/alert "in cell 1 1")}])]
+        #_[:> Row
+           ;[:> Col]
+           (for [col (range 9)]
+                [cell {:id        (str col "-" 2)
+                       :value     col
+                       :on-change #(js/alert "in cell 1 1")}])]
+        (for [r (range 9)]
+             [(r/adapt-react-class Row)
+              (for [col (range 9)]
+                   ;[(r/adapt-react-class Col)]
+                   [cell {:id        (str col "-" 1)
+                          :value     col
+                          :on-change #(js/alert "in cell 1 1")}])])
         ]])
 
 
@@ -56,6 +56,6 @@
 
 (defn grid1
       [data]
-       [cell {:id        "1-1"
-                :value     1
-                :on-change #(js/alert "in cell 1 1")}])
+      [cell {:id        "1-1"
+             :value     1
+             :on-change #(js/alert "in cell 1 1")}])
