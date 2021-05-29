@@ -2,14 +2,51 @@
   (:require ["@smooth-ui/core-sc" :refer [Normalize Grid Row Col FormGroup Label Input Box Button]]
             [reagent.core :as r]))
 
+
+
+(defn is-grid-top
+      [index]
+      (zero? (mod (inc (first index)) 3)))
+
+(defn is-grid-bottom
+      [index]
+      (zero? (mod (inc (first index)) 3)))
+
+(defn is-grid-right
+      [index]
+      (zero? (mod (inc (last index)) 3)))
+
+(defn is-grid-left
+      [index]
+      (zero? (mod (inc (last index)) 3)))
+
+(defn get-border-width
+      [index]
+
+      (let [border-fn #(if % "2px" "1px")]
+           ;(.log js/console (str "calling width for " index))
+           (let [border-val (mapv
+                              border-fn
+                              ((juxt is-grid-top
+                                     is-grid-bottom
+                                     is-grid-right
+                                     is-grid-left) index))]
+                (.log js/console border-val)
+                border-val))
+      )
+
 (defn cell
-      [{:keys [id value on-change]}]
+      [{:keys [id value on-change index]}]
       [(r/adapt-react-class Box) {:key              id
                                   :type             :number
                                   :ml               2
                                   :content-editable (nil? value)
                                   :on-change        on-change
-                                  :border           "2px solid #10AF34"
+                                  :border           "1px solid #10AF34"
+                                  :style            {:margin-left  "0px"
+                                                     ;; TODO For some reason width is not coming up
+                                                     :border-width ["1px" "5px" "10px" "20px"] #_(get-border-width index)
+                                                     :border-style "solid"}
                                   :width            "30px"
                                   :height           "30px"
                                   :align            "center"}
@@ -28,12 +65,13 @@
                 [cell {:id        (str col "-" 2)
                        :value     col
                        :on-change #(js/alert "in cell 1 1")}])]
-        (for [r (range 9)]
+        (for [row (range 9)]
              [(r/adapt-react-class Row)
               (for [col (range 9)]
                    ;[(r/adapt-react-class Col)]
-                   [cell {:id        (str col "-" 1)
+                   [cell {:id        (str col "-" row)
                           :value     col
+                          :index     [row col]
                           :on-change #(js/alert "in cell 1 1")}])])
         ]])
 
