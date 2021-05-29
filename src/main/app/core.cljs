@@ -10,13 +10,7 @@
 ;; This version is not working
 (defn app
       []
-      (grid (generate-data)))
-
-(defn app1
-      []
-      (cell {:id        "1-1"
-             :value     nil
-             :on-change #(js/alert "in cell 1 1")}))
+       [grid [generate-data]])
 
 (defn ^:dev/after-load start
       []

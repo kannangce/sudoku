@@ -22,30 +22,40 @@
       [data]
       [:<>
        [:> Grid {:fluid false}
-        (for [row (range 9)]
-           [:> Row
-            (for [col (range 9)]
-                [:> Col
-                 (cell {:id (str row col)
-                       :value (get-in data [row col])
-                       :on-change #(js/alert (str "in cell " row " " cell))})])])]])
+        ;(for [row (range 9)])
+        [:> Row
+         ;[:> Col]
+         (for [col (range 9)]
+              [cell {:id        (str col "-" 2)
+                     :value     col
+                     :on-change #(js/alert "in cell 1 1")}])]
+        [:> Row
+         ;[:> Col]
+         (for [col (range 9)]
+              [cell {:id        (str col "-" 2)
+                     :value     col
+                     :on-change #(js/alert "in cell 1 1")}])]
+        ]])
 
 
 ;; This version is not working
 (defn grid2
       [data]
       [:<>
-       [:> Normalize]
        [:> Grid {:fluid false}
         [:> Row
+         [:> Col
+          [cell {:id        "1-1"
+                 :value     1
+                 :on-change #(js/alert "in cell 1 1")}]]
          [:> Col
           [cell {:id        "1-1"
                  :value     1
                  :on-change #(js/alert "in cell 1 1")}]]]]])
 
 
-(defn grid
+(defn grid1
       [data]
-      (cell {:id        "1-1"
-             :value     1
-             :on-change #(js/alert "in cell 1 1")}))
+       [cell {:id        "1-1"
+                :value     1
+                :on-change #(js/alert "in cell 1 1")}])
