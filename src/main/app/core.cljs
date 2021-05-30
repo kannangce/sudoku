@@ -10,7 +10,7 @@
 ;; This version is not working
 (defn app
       []
-       [grid [generate-data]])
+       [grid (generate-data)])
 
 (defn ^:dev/after-load start
       []

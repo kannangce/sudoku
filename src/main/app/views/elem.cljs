@@ -57,6 +57,7 @@
 ;; This version is not working
 (defn grid
       [data]
+      (.log js/console (str (type data) data))
       [:<>
        [:> Grid {:fluid false}
         #_[:> Row
@@ -70,7 +71,7 @@
               (for [col (range 9)]
                    ;[(r/adapt-react-class Col)]
                    [cell {:id        (str col "-" row)
-                          :value     col
+                          :value     (get-in data [row col])
                           :index     [row col]
                           :on-change #(js/alert "in cell 1 1")}])])
         ]])
