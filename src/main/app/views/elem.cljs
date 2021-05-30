@@ -1,6 +1,7 @@
 (ns app.views.elem
   (:require ["@smooth-ui/core-sc" :refer [Normalize Grid Row Col FormGroup Label Input Box Button]]
             [reagent.core :as r]
+            [re-frame.core :as rf]
             [re-frame.core :as rf]))
 
 
@@ -39,6 +40,7 @@
 (defn cell
       [{:keys [id value on-change index]}]
       [(r/adapt-react-class Box) {:key              id
+                                  :as               "Input"
                                   :type             :number
                                   :ml               2
                                   :content-editable (nil? value)
@@ -50,7 +52,10 @@
                                                      :border-style "solid"}
                                   :width            "30px"
                                   :height           "30px"
-                                  :align            "center"}
+                                  :align            "center"
+                                  :value value
+                                  :control false
+                                  }
        value])
 
 
@@ -77,3 +82,10 @@
                                :index     [row col]
                                :on-change #(js/alert "in cell 1 1")}])])
              ]]))
+
+(defn solve
+      []
+      [:> Button {
+                  :variant "light"
+                  :on-click #(rf/dispatch [:solve])
+                  } "Solve"])
