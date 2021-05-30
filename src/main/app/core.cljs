@@ -1,16 +1,19 @@
 (ns app.core
   (:require [reagent.core :as r]
             [re-frame.core :as rf]
+            [app.db]
             ["@smooth-ui/core-sc"
              :refer
              [Normalize ThemeProvider Button Grid Row Col]]
             [app.views.elem :refer [cell grid]]
-            [app.sudoku :refer [generate-data]]))
+            [app.sudoku.generator :refer [generate-data]]
+            [app.subs]
+            ))
 
 ;; This version is not working
 (defn app
       []
-       [grid (generate-data)])
+       [grid])
 
 (defn ^:dev/after-load start
       []

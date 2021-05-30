@@ -1,14 +1,19 @@
 (ns app.db
   (:require [re-frame.core :as rf]
-            [app.utils :as util]
+            [app.sudoku.generator :refer [generate-data]]
             ))
 
-(def initial-app-db []
-  {:vals (util/create-matrix 9 9)})
+(defn initial-app-db []
+      (let [problem-data (generate-data)]
+           (.log js/console (str "init-data" problem-data))
+           {:generated problem-data
+            :grid-data problem-data}))
 
 
 (rf/reg-event-db
   :initialize-db
   (fn
     [_ _]
-    initial-app-db))
+    (let [db-data (initial-app-db)]
+         (.log js/console (str "init-data" db-data))
+         db-data)))

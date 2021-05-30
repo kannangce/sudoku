@@ -1,4 +1,4 @@
-(ns app.sudoku
+(ns app.sudoku.generator
   (:require [app.utils :refer [create-matrix]]))
 
 (defn generate-data
