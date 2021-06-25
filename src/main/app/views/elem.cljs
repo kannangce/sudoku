@@ -1,7 +1,6 @@
 (ns app.views.elem
   (:require ["@smooth-ui/core-sc" :refer [Normalize Grid Row Col FormGroup Label Input Box Button]]
             [reagent.core :as r]
-            [re-frame.core :as rf]
             [re-frame.core :as rf]))
 
 
@@ -39,31 +38,33 @@
 
 (defn cell
       [{:keys [id value on-change index]}]
-      [(r/adapt-react-class Box) {:key              id
-                                  :as               "Input"
-                                  :type             :number
-                                  :ml               2
-                                  :content-editable (nil? value)
-                                  :on-change        on-change
-                                  :border           "1px solid #10AF34"
-                                  :style            {:margin-left  "0px"
-                                                     ;; TODO For some reason width is not coming up
-                                                     :border-width ["1px" "5px" "10px" "20px"] #_(get-border-width index)
-                                                     :border-style "solid"}
-                                  :width            "30px"
-                                  :height           "30px"
-                                  :align            "center"
-                                  :value value
-                                  :control false
-                                  }
-       value])
+      [(r/adapt-react-class Input) {:key              id
+                                    ;:type             :number
+                                    :ml               2
+                                    :content-editable (nil? value)
+                                    :on-change        on-change
+                                    ;:border           "1px solid #10AF34"
+                                    :style            {:margin-left  "0px"
+                                                       ;; TODO For some reason width is not coming up
+                                                       :border-width ["2px" "5px" "10px" "20px"] #_(get-border-width index)
+                                                       :border-style "solid"}
+                                    :width            "30px"
+                                    :height           "30px"
+                                    :align            "center"
+                                    :value            value
+                                    :control          true
+                                    :pattern          "[1-9]{1}"
+                                    ;:validate         #(identity false)
+                                    :class            ["grid-top"]
+                                    }])
 
 
 
 ;; This version is not working
 (defn grid
       []
-      (let [grid-data @(rf/subscribe [:grid-data])]
+      (let [grid-data @(rf/subscribe [:grid-data])
+            grid-values (r/atom grid-data)]
            (.log js/console grid-data)
            [:<>
             [:> Grid {:fluid false}
@@ -77,15 +78,17 @@
                   [(r/adapt-react-class Row)
                    (for [col (range 9)]
                         ;[(r/adapt-react-class Col)]
-                        [cell {:id        (str col "-" row)
-                               :value     (get-in grid-data [row col])
+                        [cell {:id        (str row "-" col)
+                               :key       (str row "-" col)
+                               :value     (get-in @grid-values [row col])
                                :index     [row col]
-                               :on-change #(js/alert "in cell 1 1")}])])
+                               :on-change #(rf/dispatch [:data-updated [row col] (js/parseInt (.. % -target -value))])}])])
              ]]))
 
 (defn solve
       []
       [:> Button {
-                  :variant "light"
+                  ;:variant "light"
+                  :style    {:margin-top "2px"}
                   :on-click #(rf/dispatch [:solve])
                   } "Solve"])
