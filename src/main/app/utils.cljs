@@ -38,3 +38,15 @@
       (mapv
         #(apply vector (reverse %))
         data))
+
+(defn debug
+      [x]
+      (.log js/console "debugging")
+      (.log js/console x)
+      x)
+
+(defn cleanse
+      [x]
+      (if (and (number? x) (<= 1 x 9))
+        x
+        nil))

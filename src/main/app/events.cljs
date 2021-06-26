@@ -1,5 +1,6 @@
 (ns app.events
-  (:require [re-frame.core :refer [reg-event-db]]))
+  (:require [re-frame.core :refer [reg-event-db]]
+            [app.utils :refer [cleanse]]))
 
 (reg-event-db
   :solve
@@ -13,4 +14,4 @@
   (fn [db [_ [row col] data]]
       (assoc-in db
                 [:grid-data row col]
-                data)))
+                (cleanse data))))

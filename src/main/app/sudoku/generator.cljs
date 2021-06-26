@@ -148,12 +148,10 @@
             flip-index (rand-int 3)
             rot (rand-int 4)
             index (rand-int 1000)]
-           (debug [level flip-index rot index])
-           ;(debug (get data level))
            (-> (get data level)
-               (#(get % (mod index (count %))))
-               (xform #(mapv (fn [x] (if (zero? x) nil x)) %))
-               (xform to-nested-vec)
+               (#(get % (mod index (count %))))             ;; Choose a random one from the level
+               (xform #(mapv (fn [x] (if (zero? x) nil x)) %)) ;; replace 0 with nil
+               (xform to-nested-vec)                        ;; txm to nested vector
                (xform #(flip % flip-index))
                (xform #(rotate % rot))
                )))

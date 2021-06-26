@@ -4,7 +4,7 @@
             [app.db]
             ["@smooth-ui/core-sc" :refer
              [Normalize ThemeProvider Button Grid Row Col]]
-            [app.views.elem :refer [cell grid solve]]
+            [app.views.elem :refer [cell grid controls]]
             [app.sudoku.generator :refer [generate-data]]
             [app.subs]
             [app.events]
@@ -15,8 +15,10 @@
       []
        [:> Grid
         [:> Row
-         [grid]
-         [solve]]])
+         [:> Col
+          [grid]]
+         [:> Col
+          [controls]]]])
 
 (defn ^:dev/after-load start
       []

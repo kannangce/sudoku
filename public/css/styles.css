@@ -9,3 +9,32 @@ input[type=number]::-webkit-outer-spin-button {
 .grid-top {
     border-top: 1px solid #10AF34;
 }
+
+.incorrect {
+    background-color: #f1c0c0 !important;
+}
+
+.grid-cell {
+    border-radius: 0 !important;
+    text-align: center;
+}
+
+input.grid-left {
+    border-left: black;
+    border-width: 1px;
+}
+
+input.grid-top {
+    border-top: black;
+    border-width: 1px;
+}
+
+input.grid-right {
+    border-right: black;
+    border-width: 1px;
+}
+
+input.grid-bottom {
+    border-bottom: black;
+    border-width: 1px;
+}
