@@ -11,7 +11,8 @@
             (.log js/console (str "init-data" problem-data))
             {:generated problem-data
              :grid-data problem-data
-             :solution  solution}))
+             :solution  solution
+             :solved?   false}))
 
 
 (rf/reg-event-db

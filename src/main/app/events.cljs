@@ -12,6 +12,11 @@
 (reg-event-db
   :data-updated
   (fn [db [_ [row col] data]]
-      (assoc-in db
-                [:grid-data row col]
-                (cleanse data))))
+      (let [updated-data (assoc-in db
+                                   [:grid-data row col]
+                                   (cleanse data))
+            solved? (= (get updated-data :grid-data) (get updated-data :solution))]
+           (.log js/console solved?)
+           (.log js/console updated-data)
+           (.log js/console "Solved flag...")
+           (assoc-in updated-data [:solved?] solved?))))

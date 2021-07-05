@@ -10,3 +10,8 @@
   :solution
   (fn [db _]
       (get-in db [:solution])))
+
+(reg-sub
+  :solved?
+  (fn [db _]
+      (get-in db [:solved?])))

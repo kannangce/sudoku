@@ -1,5 +1,6 @@
 (ns app.views.elem
-  (:require ["@smooth-ui/core-sc" :refer [Normalize Grid Row Col FormGroup Label Input Box Button]]
+  (:require ["@smooth-ui/core-sc" :refer [Normalize Grid Row Col FormGroup Label Input Box Button ModalDialog
+                                          ModalContent ModalCloseButton ModalHeader Typography ModalBody]]
             [reagent.core :as r]
             [re-frame.core :as rf]
             [app.utils :refer [debug]]))
@@ -29,27 +30,27 @@
 
 (def class-map
   {
-   :incorrect  incorrect?
-   :grid-top  grid-top?
-   :grid-bottom  grid-bottom?
+   :incorrect   incorrect?
+   :grid-top    grid-top?
+   :grid-bottom grid-bottom?
    :grid-right  grid-right?
-   :grid-left  grid-left?
+   :grid-left   grid-left?
    })
 
 #_(defn get-border-width
-      [index]
+        [index]
 
-      (let [border-fn #(if % "2px" "1px")]
-           ;(.log js/console (str "calling width for " index))
-           (let [border-val (mapv
-                              border-fn
-                              ((juxt is-grid-top
-                                     is-grid-bottom
-                                     is-grid-right
-                                     is-grid-left) index))]
-                (.log js/console border-val)
-                border-val))
-      )
+        (let [border-fn #(if % "2px" "1px")]
+             ;(.log js/console (str "calling width for " index))
+             (let [border-val (mapv
+                                border-fn
+                                ((juxt is-grid-top
+                                       is-grid-bottom
+                                       is-grid-right
+                                       is-grid-left) index))]
+                  (.log js/console border-val)
+                  border-val))
+        )
 
 (defn get-cell-class
       [[row col]]
@@ -58,16 +59,15 @@
            (let [actual-data (get-in @grid-data [row col])
                  expected-data (get-in @solution-data [row col])]
                 #_(debug [row col actual-data expected-data])
-                (for [[k v] class-map] (if (v {:index [row col]
-                                               :actual-data actual-data
+                (for [[k v] class-map] (if (v {:index         [row col]
+                                               :actual-data   actual-data
                                                :expected-data expected-data}) k)))))
 
 (defn cell
       [{:keys [id value on-change index]}]
       [(r/adapt-react-class Input) {:key              id
-                                    ;:type             :number
                                     :ml               2
-                                    :content-editable (nil? value)
+                                    :content-editable (and (nil? value))
                                     :on-change        on-change
                                     ;:border           "1px solid #10AF34"
                                     :style            {:margin-left  "0px"
@@ -117,6 +117,23 @@
                   :on-click #(rf/dispatch [:solve])
                   } "Solve"])
 
+(defn solved-message
+      []
+      (let [solved? (r/atom @(rf/subscribe [:solved?]))]
+           (do
+             (.log js/console @solved?)
+             (.log js/console "Solved flag")
+             (if @solved?
+               [:> ModalDialog
+                [:> ModalContent]
+                [:> ModalContent
+                 [:> ModalCloseButton]
+                 [:> ModalHeader
+                  [:> Typography
+                   "Modal title"]]
+                 [:> ModalBody "You solved the grid"]]]
+               ))))
+
 (defn selection-choice
       []
       )
@@ -125,4 +142,4 @@
 (defn controls
       []
       [:> Grid
-        [:Row [solve]]])
+       [:Row [solve]]])
