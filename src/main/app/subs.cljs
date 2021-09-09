@@ -15,3 +15,9 @@
   :solved?
   (fn [db _]
       (get-in db [:solved?])))
+
+
+(reg-sub
+  :paused?
+  (fn [db _]
+      (get-in db [:paused?])))

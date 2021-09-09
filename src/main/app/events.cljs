@@ -20,3 +20,11 @@
            (.log js/console updated-data)
            (.log js/console "Solved flag...")
            (assoc-in updated-data [:solved?] solved?))))
+
+
+(reg-event-db
+  :pause
+  (fn [db [_ _]]
+      (assoc-in db
+                [:paused?]
+                (not (get db :paused)))))

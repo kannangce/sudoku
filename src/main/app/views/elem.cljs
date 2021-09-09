@@ -134,6 +134,33 @@
                  [:> ModalBody "You solved the grid"]]]
                ))))
 
+(defn show-time
+      [seconds]
+      [:div
+       [:div (str (int (/ seconds 3600)) ":" (int (/ seconds 60)) ":" (mod seconds 60))]])
+
+(defn pause [time-paused?]
+      [:input {:type     "button" :value (if @time-paused? "Resume" "Pause")
+               :on-click #(swap! time-paused? not)
+               :style {:width    "70px"}}])
+
+(defn increment-timer
+      [time paused?]
+      (if (not @paused?)
+        (swap! time inc)))
+
+(defn countdown-component []
+      (let [start-time (r/atom 0)
+            time-paused? (r/atom false)]
+           (if (not @time-paused?)
+             (do
+               (js/setInterval #(increment-timer start-time time-paused?) 1000)
+               (fn []
+                   (.log js/console (str "paused?" @time-paused?))
+                   [:div.timer
+                    [:div "Timer: " (show-time @start-time)]
+                    [pause time-paused?]])))))
+
 (defn selection-choice
       []
       )
@@ -142,4 +169,5 @@
 (defn controls
       []
       [:> Grid
-       [:Row [solve]]])
+       [:> Row [solve]]
+       [:> Row [countdown-component]]])

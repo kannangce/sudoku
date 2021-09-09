@@ -12,7 +12,8 @@
             {:generated problem-data
              :grid-data problem-data
              :solution  solution
-             :solved?   false}))
+             :solved?   false
+             :paused?   false}))
 
 
 (rf/reg-event-db
