@@ -1,6 +1,6 @@
 (ns app.events
   (:require [re-frame.core :refer [reg-event-db]]
-            [app.utils :refer [cleanse]]))
+            [app.utils :refer [cleanse get-current-time-in-secs millis-to-secs]]))
 
 (reg-event-db
   :solve
@@ -15,16 +15,23 @@
       (let [updated-data (assoc-in db
                                    [:grid-data row col]
                                    (cleanse data))
-            solved? (= (get updated-data :grid-data) (get updated-data :solution))]
-           (.log js/console solved?)
-           (.log js/console updated-data)
-           (.log js/console "Solved flag...")
-           (assoc-in updated-data [:solved?] solved?))))
+            solved? (= (get updated-data :grid-data) (get updated-data :solution))
+            solved-time (if solved? (.now js/Date) 0)]
+           (-> updated-data
+               (assoc-in [:solved?] solved?)
+               (assoc-in [:solved-at] (millis-to-secs solved-time))))))
 
 
 (reg-event-db
   :pause
   (fn [db [_ _]]
-      (assoc-in db
-                [:paused?]
-                (not (get db :paused)))))
+      (let [start-time (get db :start-time)
+            curr-time (get-current-time-in-secs)
+            curr-offset (get db :time-offset)]
+           (-> db
+               (assoc-in [:paused?]
+                         (not (get db :paused)))
+               (assoc-in [:time-offset]
+                         (+ (- curr-time start-time) curr-offset))
+               (assoc-in [:start-time]
+                         curr-time)))))

@@ -4,14 +4,14 @@
 (defn create-matrix
       "Creates a multi-dimensional vector with dimensions given in dims
       with the given default value"
-          ([default-value & dims]
-           (loop [val default-value remaining dims]
-                 (if (empty? remaining)
-                   val
-                   (recur (vec (repeat (first remaining) val))
-                          (rest remaining)))
-                 ))
-          ([] nil))
+      ([default-value & dims]
+       (loop [val default-value remaining dims]
+             (if (empty? remaining)
+               val
+               (recur (vec (repeat (first remaining) val))
+                      (rest remaining)))
+             ))
+      ([] nil))
 
 
 (defn apply-fn-times [f p t]
@@ -50,3 +50,13 @@
       (if (and (number? x) (<= 1 x 9))
         x
         nil))
+
+(defn millis-to-secs
+      [millis]
+      (-> millis
+          (/ 1000)
+          (int)))
+
+(defn get-current-time-in-secs
+      []
+      (millis-to-secs (.now js/Date)))

@@ -1,9 +1,10 @@
 (ns app.views.elem
   (:require ["@smooth-ui/core-sc" :refer [Normalize Grid Row Col FormGroup Label Input Box Button ModalDialog
-                                          ModalContent ModalCloseButton ModalHeader Typography ModalBody]]
+                                          ModalContent ModalCloseButton ModalHeader Typography ModalBody Select]]
             [reagent.core :as r]
             [re-frame.core :as rf]
-            [app.utils :refer [debug]]))
+            [app.utils :refer [debug]]
+            [app.utils :refer [get-current-time-in-secs]]))
 
 
 
@@ -20,6 +21,22 @@
       (zero? (mod (inc (last index)) 3)))
 
 (defn grid-left?
+      [{:keys [index]}]
+      (zero? (mod (last index) 3)))
+
+(defn selected-cell?
+      [{:keys [index]}]
+      (zero? (mod (last index) 3)))
+
+(defn selected-col?
+      [{:keys [index]}]
+      (zero? (mod (last index) 3)))
+
+(defn selected-row?
+      [{:keys [index]}]
+      (zero? (mod (last index) 3)))
+
+(defn selected-grid?
       [{:keys [index]}]
       (zero? (mod (last index) 3)))
 
@@ -66,7 +83,7 @@
 (defn cell
       [{:keys [id value on-change index]}]
       [(r/adapt-react-class Input) {:key              id
-                                    :ml               2
+                                    ;:ml               2
                                     :content-editable (and (nil? value))
                                     :on-change        on-change
                                     ;:border           "1px solid #10AF34"
@@ -79,7 +96,6 @@
                                     :value            value
                                     :control          true
                                     :pattern          "[1-9]{1}"
-                                    ;:validate         #(identity false)
                                     :class            (conj (get-cell-class index) :grid-cell)
                                     }])
 
@@ -117,6 +133,36 @@
                   :on-click #(rf/dispatch [:solve])
                   } "Solve"])
 
+(defn level-selector
+      []
+      [:> Select
+       [:option "Expert"]
+       [:option "Medium"]
+       [:option "Easy"]])
+
+
+(defn format-time
+      "Format the given time in seconds to a specified format"
+      [seconds]
+      (str (int (/ seconds 3600)) "hr(s) " (int (/ seconds 60)) "min(s) " (mod seconds 60) "sec(s)"))
+
+
+(defn get-total-time-taken
+      "Gets the total time taken in seconds"
+      ([]
+       (let [start-time (r/atom @(rf/subscribe [:start-time]))
+             offset (r/atom @(rf/subscribe [:time-offset]))
+             end-time (r/atom @(rf/subscribe [:solved-at]))]
+            (get-total-time-taken start-time end-time offset)))
+      ([start-time end-time offset]
+       (int (+ @offset
+               (- @end-time @start-time))))
+      ([end-time]
+       (let [start-time (r/atom @(rf/subscribe [:start-time]))
+             offset (r/atom @(rf/subscribe [:time-offset]))
+             end-time (r/atom end-time)]
+            (get-total-time-taken start-time end-time offset))))
+
 (defn solved-message
       []
       (let [solved? (r/atom @(rf/subscribe [:solved?]))]
@@ -131,18 +177,23 @@
                  [:> ModalHeader
                   [:> Typography
                    "Modal title"]]
-                 [:> ModalBody "You solved the grid"]]]
+                 [:> ModalBody (str "You solved the puzzle in " (format-time (get-total-time-taken)))]]]
                ))))
+
+
+;;;;;; Timer component
 
 (defn show-time
       [seconds]
       [:div
-       [:div (str (int (/ seconds 3600)) ":" (int (/ seconds 60)) ":" (mod seconds 60))]])
+       [:div (format-time seconds)]])
+
 
 (defn pause [time-paused?]
-      [:input {:type     "button" :value (if @time-paused? "Resume" "Pause")
-               :on-click #(swap! time-paused? not)
-               :style {:width    "70px"}}])
+      [(r/adapt-react-class Input) {:type     "button" :value (if @time-paused? "Resume" "Pause")
+                                    :on-click #(do (swap! time-paused? not) (rf/dispatch [:pause]))
+
+                                    }])
 
 (defn increment-timer
       [time paused?]
@@ -150,7 +201,7 @@
         (swap! time inc)))
 
 (defn countdown-component []
-      (let [start-time (r/atom 0)
+      (let [start-time (r/atom (get-total-time-taken (get-current-time-in-secs)))
             time-paused? (r/atom false)]
            (if (not @time-paused?)
              (do
@@ -161,6 +212,8 @@
                     [:div "Timer: " (show-time @start-time)]
                     [pause time-paused?]])))))
 
+;;;;;
+
 (defn selection-choice
       []
       )
@@ -169,5 +222,6 @@
 (defn controls
       []
       [:> Grid
+       [:> Row [level-selector]]
        [:> Row [solve]]
        [:> Row [countdown-component]]])

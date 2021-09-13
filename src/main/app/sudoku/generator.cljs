@@ -128,7 +128,7 @@
             rot (rand-int 4)
             index (rand-int 1000)]
            (println index level flip rot)
-           (reduce +  (map * [1000 100 10 1] [index level flip rot]))))
+           (reduce + (map * [1000 100 10 1] [index level flip rot]))))
 
 
 (defn debug
@@ -139,19 +139,27 @@
 
 (defn xform
       [data fun]
-      {:data (fun (:data data))
+      {:data     (fun (:data data))
        :solution (fun (:solution data))})
+
+#_(defn generate-data
+        []
+        (let [level (get levels (rand-int 3))
+              flip-index (rand-int 3)
+              rot (rand-int 4)
+              index (rand-int 1000)]
+             (-> (get data level)
+                 (#(get % (mod index (count %))))           ;; Choose a random one from the level
+                 (xform #(mapv (fn [x] (if (zero? x) nil x)) %)) ;; replace 0 with nil
+                 (xform to-nested-vec)                      ;; txm to nested vector
+                 (xform #(flip % flip-index))
+                 (xform #(rotate % rot))
+                 )))
 
 (defn generate-data
       []
-      (let [level (get levels (rand-int 3))
-            flip-index (rand-int 3)
-            rot (rand-int 4)
-            index (rand-int 1000)]
-           (-> (get data level)
-               (#(get % (mod index (count %))))             ;; Choose a random one from the level
-               (xform #(mapv (fn [x] (if (zero? x) nil x)) %)) ;; replace 0 with nil
+      (let [dat {:data     [5 9 3 8 7 6 2 4 1 1 2 4 5 9 3 7 6 8 6 8 7 2 1 4 3 9 5 7 1 9 3 8 5 4 2 6 3 6 8 4 2 9 1 5 7 4 5 2 1 6 7 9 8 3 9 3 5 6 4 1 8 7 2 8 7 6 9 3 2 5 1 4 2 4 1 7 5 8 6 3 nil],
+                 :solution [5 9 3 8 7 6 2 4 1 1 2 4 5 9 3 7 6 8 6 8 7 2 1 4 3 9 5 7 1 9 3 8 5 4 2 6 3 6 8 4 2 9 1 5 7 4 5 2 1 6 7 9 8 3 9 3 5 6 4 1 8 7 2 8 7 6 9 3 2 5 1 4 2 4 1 7 5 8 6 3 9]}]
+           (-> dat
                (xform to-nested-vec)                        ;; txm to nested vector
-               (xform #(flip % flip-index))
-               (xform #(rotate % rot))
                )))
