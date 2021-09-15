@@ -15,8 +15,13 @@ input[type=number]::-webkit-outer-spin-button {
 }
 
 .grid-cell {
-    border-radius: 0 !important;
+    border: solid 0 #ffffff;
     text-align: center;
+    margin: 0;
+    width: 30pt;
+    height: 30pt;
+    border-left: #DDDDEE solid 1px;
+    border-bottom: #DDDDEE solid 1px;
 }
 
 input.grid-left {

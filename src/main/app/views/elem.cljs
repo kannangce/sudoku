@@ -82,22 +82,23 @@
 
 (defn cell
       [{:keys [id value on-change index]}]
-      [(r/adapt-react-class Input) {:key              id
-                                    ;:ml               2
-                                    :content-editable (and (nil? value))
-                                    :on-change        on-change
-                                    ;:border           "1px solid #10AF34"
-                                    :style            {:margin-left  "0px"
-                                                       ;; TODO For some reason width is not coming up
-                                                       :border-style "solid"}
-                                    :width            "30px"
-                                    :height           "30px"
-                                    :align            "center"
-                                    :value            value
-                                    :control          true
-                                    :pattern          "[1-9]{1}"
-                                    :class            (conj (get-cell-class index) :grid-cell)
-                                    }])
+      [:td
+       [:input
+        {:size             2
+         :key              id
+         ;:ml               2
+         :content-editable (and (nil? value))
+         :on-change        on-change
+         ;:border           "1px solid #10AF34"
+         :style            {:margin-left  "0px"
+                            ;; TODO For some reason width is not coming up
+                            :border-style "solid"}
+         :width            "30px"
+         :height           "30px"
+         :align            "center"
+         :value            value
+         :control          true
+         :class            (conj (get-cell-class index) :grid-cell)}]])
 
 
 
@@ -115,7 +116,7 @@
                            :value     col
                            :on-change #(js/alert "in cell 1 1")}])]
             (for [row (range 9)]
-                 [(r/adapt-react-class Row)
+                 [:tr
                   (for [col (range 9)]
                        #_[(r/adapt-react-class Col)]
                        [cell {:id        (str row "-" col)
@@ -212,7 +213,6 @@
                     [:div "Timer: " (show-time @start-time)]
                     [pause time-paused?]])))))
 
-;;;;;
 
 (defn selection-choice
       []
