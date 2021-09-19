@@ -137,9 +137,11 @@
 (defn level-selector
       []
       [:> Select
-       [:option "Expert"]
-       [:option "Medium"]
-       [:option "Easy"]])
+       {:on-change #(rf/dispatch [:level-selected (.. % -target -value)])}
+       [:option {:value :expert} "Expert"]
+       [:option {:value :medium} "Medium"]
+       [:option {:value :easy} "Easy"]
+       ])
 
 
 (defn format-time
@@ -193,7 +195,6 @@
 (defn pause [time-paused?]
       [(r/adapt-react-class Input) {:type     "button" :value (if @time-paused? "Resume" "Pause")
                                     :on-click #(do (swap! time-paused? not) (rf/dispatch [:pause]))
-
                                     }])
 
 (defn increment-timer
@@ -201,22 +202,25 @@
       (if (not @paused?)
         (swap! time inc)))
 
+(defn refresh-time-if-needed
+      [start-time total-time-taken]
+      (when-not (= @start-time @(rf/subscribe [:start-time]))
+            (swap! total-time-taken #(get-total-time-taken (get-current-time-in-secs))))
+      )
+
 (defn countdown-component []
-      (let [start-time (r/atom (get-total-time-taken (get-current-time-in-secs)))
+      (let [start-time (r/atom @(rf/subscribe [:start-time]))
+            total-time (r/atom (get-total-time-taken (get-current-time-in-secs)))
             time-paused? (r/atom false)]
            (if (not @time-paused?)
              (do
-               (js/setInterval #(increment-timer start-time time-paused?) 1000)
+               (js/setInterval #(do (refresh-time-if-needed start-time total-time) (increment-timer total-time time-paused?)) 1000)
                (fn []
                    (.log js/console (str "paused?" @time-paused?))
                    [:div.timer
-                    [:div "Timer: " (show-time @start-time)]
+                    [:div "Timer: " (show-time @total-time)]
                     [pause time-paused?]])))))
 
-
-(defn selection-choice
-      []
-      )
 
 
 (defn controls

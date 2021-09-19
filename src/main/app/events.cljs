@@ -1,6 +1,7 @@
 (ns app.events
   (:require [re-frame.core :refer [reg-event-db]]
-            [app.utils :refer [cleanse get-current-time-in-secs millis-to-secs]]))
+            [app.utils :refer [cleanse get-current-time-in-secs millis-to-secs]]
+            [app.db :refer [initial-app-db]]))
 
 (reg-event-db
   :solve
@@ -35,3 +36,8 @@
                          (+ (- curr-time start-time) curr-offset))
                (assoc-in [:start-time]
                          curr-time)))))
+
+(reg-event-db
+  :level-selected
+  (fn [db [_ selected-level]]
+      (merge db (initial-app-db))))

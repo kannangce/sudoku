@@ -10,6 +10,9 @@
     "clean-win": "rmdir /s /q public/js & rmdir /s /q target"
   },
   "dependencies": {
+    "@material-ui/core": "4.11.3",
+    "@material-ui/lab": "4.0.0-alpha.57",
+    "@material-ui/pickers": "3.3.10",
     "@smooth-ui/core-sc": "9.0.2",
     "create-react-class": "^15.6.3",
     "react": "^16.5.2",
